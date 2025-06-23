@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "ping-blocker",
+    "ping-blocker-ebpf",
+]
+
+[workspace.dependencies]
+aya = "0.12"
+aya-log = "0.12"

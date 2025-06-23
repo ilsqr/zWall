@@ -1,0 +1,16 @@
+[package]
+name = "ping-blocker-ebpf"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+aya-bpf = "0.12"
+aya-log-ebpf = "0.12"
+network-types = "0.0.5"
+
+[profile.release]
+opt-level = 3
+lto = true

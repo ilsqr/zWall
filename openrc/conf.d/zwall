@@ -1,0 +1,20 @@
+# zWall Configuration File
+# /etc/conf.d/zwall
+
+# Network interface to monitor
+# Default: eth0
+ZWALL_INTERFACE="eth0"
+
+# SSH connection threshold (connections per time window)
+# When this threshold is exceeded, the source IP will be blocked
+# Default: 10
+ZWALL_THRESHOLD="10"
+
+# Additional command line arguments
+# Example: "--verbose" for detailed logging
+ZWALL_EXTRA_ARGS=""
+
+# Logging level
+# Options: error, warn, info, debug
+# Default: info
+ZWALL_LOG_LEVEL="info"

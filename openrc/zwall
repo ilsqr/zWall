@@ -1,0 +1,51 @@
+#!/sbin/openrc-run
+
+name="zwall"
+description="zWall - eBPF Ping Blocker & SSH DDoS Protection"
+command="/usr/local/bin/ping-blocker"
+command_args="--iface ${ZWALL_INTERFACE:-eth0} --threshold ${ZWALL_THRESHOLD:-10} ${ZWALL_EXTRA_ARGS}"
+command_user="root:root"
+pidfile="/run/${RC_SVCNAME}.pid"
+command_background="yes"
+
+depend() {
+    need net
+    after firewall
+    keyword -jail -prefix
+}
+
+start_pre() {
+    # Ağ arayüzünün mevcut olduğunu kontrol et
+    local interface="${ZWALL_INTERFACE:-eth0}"
+    if ! ip link show "$interface" >/dev/null 2>&1; then
+        eerror "Network interface $interface not found"
+        return 1
+    fi
+    
+    # eBPF desteğini kontrol et
+    if [ ! -d /sys/fs/bpf ]; then
+        eerror "eBPF filesystem not mounted"
+        return 1
+    fi
+    
+    einfo "Starting zWall on interface: $interface"
+    einfo "SSH threshold: ${ZWALL_THRESHOLD:-10} connections"
+}
+
+start_post() {
+    einfo "zWall started successfully"
+    einfo "Monitoring ICMP ping requests and SSH connections"
+}
+
+stop_pre() {
+    einfo "Stopping zWall..."
+}
+
+stop_post() {
+    einfo "zWall stopped - network filtering disabled"
+    
+    # Cleanup işlemleri
+    if [ -f "$pidfile" ]; then
+        rm -f "$pidfile"
+    fi
+}
